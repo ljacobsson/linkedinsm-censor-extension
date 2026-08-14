@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>LinkedInism Censor</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main>
+    <header>
+      <div class="mark" aria-hidden="true">LI<span>!</span></div>
+      <div><h1>LinkedInism Censor</h1><p>Make the feed sound human again.</p></div>
+      <label class="switch"><input id="enabled" type="checkbox"><span></span></label>
+    </header>
+
+    <section>
+      <h2>Replace the clichés with</h2>
+      <div class="modes" role="radiogroup">
+        <label><input type="radio" name="mode" value="asterisks"><span><b>********</b><small>Classic censorship</small></span></label>
+        <label><input type="radio" name="mode" value="symbols"><span><b>%!#$!&</b><small>Cartoon outrage</small></span></label>
+        <label><input type="radio" name="mode" value="funny"><span><b>Office nonsense</b><small>Hundreds of silly variations</small></span></label>
+        <label><input type="radio" name="mode" value="spicy"><span><b>Profanity</b><small>Corporate, but sweary</small></span></label>
+        <label><input type="radio" name="mode" value="apology"><span><b>Keep + apologize</b><small>Original phrase with a confession</small></span></label>
+      </div>
+    </section>
+
+    <section class="intensity">
+      <div><h2>Detection level</h2><output id="intensityLabel">Balanced</output></div>
+      <input id="intensity" type="range" min="0" max="2" step="1" aria-label="Detection level">
+      <div class="ticks"><span>Gentle</span><span>Balanced</span><span>Ruthless</span></div>
+    </section>
+    <footer><span class="dot"></span> Runs locally on linkedin.com</footer>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>
