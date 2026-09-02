@@ -178,7 +178,7 @@
     return replacementText;
   }
 
-  const profanityPattern = /\b(?:fuck(?:ing|ed|er|ers|ery|s)?|motherfuck\w*|clusterfuck\w*|shit\w*|bullshit\w*|ass|asses|asshole\w*|bitch\w*|piss\w*|cunt\w*|dick\w*|cock\w*|bastard\w*|turd\w*)\b/iu;
+  const profanityPattern = /\b(?:fuck(?:ing|ed|er|ers|ery|s)?|motherfuck\w*|clusterfuck\w*|shit\w*|bullshit\w*|(?:god)?damn|hell|crap|ass|asses|asshole\w*|bitch\w*|piss\w*|cunt\w*|dick\w*|cock\w*|bastard\w*|turd\w*)\b/iu;
 
   function ensureProfanity(text) {
     if (profanityPattern.test(text)) return text;
@@ -203,10 +203,56 @@
   function grammaticalRewrite(match, category, mode, seed) {
     const normalized = match.toLocaleLowerCase().replace(/[’]/gu, "'");
 
+    // High-frequency clichés get actual punchlines. The broad grammar fallback
+    // below is useful for obscure variants, but merely decorating the original
+    // jargon ("fucking digital transformation") is not a rewrite.
+    const tailored = {
+      funny: {
+        "digital transformation": ["an expensive website costume change", "moving the same forms to a shinier screen", "the annual migration of buttons", "a PowerPoint-led technological séance"],
+        "transformative solution": ["a product wearing a superhero cape", "the old solution with dramatic lighting", "a fix that has seen the keynote deck"],
+        "avenue": ["suspicious corridor", "door that may only be painted on", "professionally landscaped detour"],
+        "avenues": ["suspicious corridors", "doors that may only be painted on", "professionally landscaped detours"],
+        "explore avenue": ["inspect a suspicious corridor", "check whether that door is painted on", "wander down a professionally landscaped detour"],
+        "explore avenues": ["inspect some suspicious corridors", "check which doors are merely painted on", "wander down several professionally landscaped detours"],
+        "collaborate": ["put our calendars in a room together", "exchange professionally formatted noises", "form a temporary spreadsheet alliance"],
+        "collaborates": ["puts two calendars in a room together", "exchanges professionally formatted noises", "forms a temporary spreadsheet alliance"],
+        "collaborated": ["put our calendars in a room together", "exchanged professionally formatted noises", "formed a temporary spreadsheet alliance"],
+        "collaborating": ["putting our calendars in a room together", "exchanging professionally formatted noises", "forming a temporary spreadsheet alliance"],
+        "collaboration": ["a temporary spreadsheet alliance", "calendar-based group theatre", "the ceremonial merging of opinions"],
+        "connect with you": ["add you to my professional sticker album", "become internet colleagues", "enter your notification ecosystem"],
+        "catch up": ["hold a ceremonial coffee", "compare recent calendar injuries", "exchange the approved amount of small talk"],
+        "compare notes": ["compare our competing spreadsheets", "synchronize our office folklore", "exchange annotated napkins"],
+        "pick your brain": ["borrow your brain without completing the procurement form", "conduct an unpaid cranial audit", "rummage politely through your expertise"],
+        "meaningful conversation": ["conversation with at least one detectable meaning", "chat that survives contact with the agenda", "meeting with the filler words removed"],
+        "mutually beneficial": ["advantageous to both of our calendars", "a two-way exchange of business cards", "suspiciously useful to everyone involved"]
+      },
+      spicy: {
+        "digital transformation": ["an expensive-as-fuck website costume change", "moving the same bullshit to a shinier screen", "the annual migration of the fucking buttons", "a consultant-powered technological shitshow"],
+        "transformative solution": ["the same old shit in a superhero cape", "a fucking product with dramatic lighting", "a fix blessed by the bullshit deck"],
+        "avenue": ["corridor of corporate bullshit", "door that probably isn't fucking real", "consultant-paved goddamn detour"],
+        "avenues": ["corridors of corporate bullshit", "doors that probably aren't fucking real", "consultant-paved goddamn detours"],
+        "explore avenue": ["see if the fucking door is real", "stumble down a consultant-paved goddamn detour", "inspect a corridor of corporate bullshit"],
+        "explore avenues": ["see which fucking doors are real", "stumble down some consultant-paved goddamn detours", "inspect the available corridors of corporate bullshit"],
+        "collaborate": ["hold a fucking meeting about another meeting", "swap some highly billable bullshit", "form a short-lived corporate clusterfuck"],
+        "collaborates": ["holds a fucking meeting about another meeting", "swaps highly billable bullshit", "forms a short-lived corporate clusterfuck"],
+        "collaborated": ["held a fucking meeting about another meeting", "swapped some highly billable bullshit", "formed a short-lived corporate clusterfuck"],
+        "collaborating": ["holding a fucking meeting about another meeting", "swapping highly billable bullshit", "forming a short-lived corporate clusterfuck"],
+        "collaboration": ["a meeting-shaped clusterfuck", "the ceremonial merging of bullshit", "calendar-based fucking group suffering"],
+        "connect with you": ["invade your fucking notifications", "become internet colleagues for some goddamn reason", "join your professional bullshit ecosystem"],
+        "catch up": ["survive a goddamn coffee chat", "compare recent corporate shitshow injuries", "exchange the mandatory fucking small talk"],
+        "compare notes": ["compare our competing bullshit decks", "synchronize the bullshit folklore", "swap some aggressively annotated crap"],
+        "pick your brain": ["request an unpaid fucking consultation", "rummage through your fucking expertise for free", "perform a goddamn cranial audit"],
+        "meaningful conversation": ["conversation containing one actual fucking meaning", "chat that survives the bullshit agenda", "meeting with the corporate filler ripped out"],
+        "mutually beneficial": ["useful to both our sorry asses", "a two-way exchange of corporate bullshit", "suspiciously fucking useful to everyone involved"]
+      }
+    };
+    const tailoredOptions = tailored[mode]?.[normalized];
+    if (tailoredOptions) return matchCapitalization(match, pick(tailoredOptions, seed));
+
     // Replace only the noun inside a journey expression. This preserves the
     // surrounding determiner, tense and clause: "this journey has" becomes
     // "this ridiculous side quest has", never an unrelated imperative.
-    if (category === "journey" && /\bjourneys?\b/iu.test(match)) {
+    if (/\bjourneys?\b/iu.test(match) && normalized !== "grateful for the journey") {
       const plural = /\bjourneys\b/iu.test(match);
       const pool = plural
         ? LinkedInismData.categories.journey.pluralNouns[mode]
@@ -244,6 +290,9 @@
     }
     const exact = {
       funny: {
+        "grateful for the journey": ["relieved about surviving the side quest", "thankful the bizarre expedition happened", "pleased to have escaped the character arc", "glad the office pilgrimage is over"],
+        "excited for what's ahead": ["cautiously curious about whatever happens next", "moderately prepared for the next plot twist", "optimistic about the approaching side quest", "intrigued by whatever the calendar throws at me"],
+        "excited for what is ahead": ["cautiously curious about whatever happens next", "moderately prepared for the next plot twist", "optimistic about the approaching side quest", "intrigued by whatever the calendar throws at me"],
         "damn": ["corporate-approved expletive", "swear word with training wheels"],
         "goddamn": ["aggressively HR-safe", "the profanity equivalent of decaf"],
         "darn": ["tiny upholstered curse", "nursery-grade outburst"],
@@ -262,6 +311,9 @@
         "embracing": ["ceremonially accepting", "awkwardly welcoming", "giving a cautious little hug to"]
       },
       spicy: {
+        "grateful for the journey": ["fucking relieved I survived the ordeal", "thankful as fuck the shitshow is over", "fucking glad I made it through the clusterfuck", "relieved as fuck about surviving that saga"],
+        "excited for what's ahead": ["fucking ready for whatever comes next", "excited as fuck about the next mess", "fucking curious about the incoming shitshow", "ready as fuck for the next plot twist"],
+        "excited for what is ahead": ["fucking ready for whatever comes next", "excited as fuck about the next mess", "fucking curious about the incoming shitshow", "ready as fuck for the next plot twist"],
         "damn": ["fuck", "shit"],
         "goddamn": ["motherfucking", "fucking"],
         "darn": ["fuck", "shit"],
@@ -290,10 +342,10 @@
     }
 
     const descriptor = mode === "spicy"
-      ? pick(["fucking", "motherfucking", "bullshit-riddled", "shit-covered", "fucked-up"], seed)
+      ? pick(["bullshit-powered", "committee-fucked", "soul-draining", "consultant-enriching fucking", "PowerPoint-haunted shitshow-grade"], seed)
       : pick(["curiously dramatic", "suspiciously shiny", "ceremonial", "office-approved", "mildly bewildering"], seed);
     const adverb = mode === "spicy"
-      ? pick(["fucking", "fucking aggressively", "ruthlessly fucking", "violently fucking", "shamelessly fucking"], seed)
+      ? pick(["through some fucking corporate theatre,", "with a goddamn slide deck,", "after consulting the bullshit oracle,", "in a wildly fucking billable manner,", "with all the grace of a corporate shitshow,"], seed)
       : pick(["ceremonially", "awkwardly", "with alarming confidence", "strategically", "for reasons involving a spreadsheet"], seed);
 
     // Insert adjectives after determiners so noun phrases remain noun phrases:
@@ -344,7 +396,9 @@
   }
 
   function censor(text, maximumMatches) {
-    const limits = { gentle: 1, balanced: 4, ruthless: Infinity };
+    // LinkedIn often renders an entire long post as one text block. A limit of
+    // four made Balanced silently ignore clichés near the end of those posts.
+    const limits = { gentle: 1, balanced: 20, ruthless: Infinity };
     const limit = maximumMatches ?? limits[config.intensity];
     const contextSeed = hash(text);
     const candidates = [];
@@ -399,8 +453,12 @@
     if (root.nodeType === Node.TEXT_NODE) return processTextNode(root);
     if (root.nodeType !== Node.ELEMENT_NODE || root.matches?.(ignored)) return;
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const textNodes = [];
     let node;
-    while ((node = walker.nextNode())) processTextNode(node);
+    // Do not mutate the DOM while TreeWalker is traversing it. Replacing a
+    // visited text node can make the walker skip later siblings and paragraphs.
+    while ((node = walker.nextNode())) textNodes.push(node);
+    textNodes.forEach(processTextNode);
   }
 
   function restore() {

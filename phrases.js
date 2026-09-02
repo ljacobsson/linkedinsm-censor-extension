@@ -4,6 +4,7 @@
   const categories = {
     announcement: {
       patterns: [
+        "excited", "excited for what(?:'s|’s| is) ahead",
         "I(?:'m| am) (?:thrilled|delighted|excited|honored|humbled|proud) to (?:announce|share)",
         "(?:thrilled|delighted|excited|honored|humbled|proud) to (?:announce|share)",
         "I have some (?:exciting|personal|bittersweet) news",
@@ -25,6 +26,7 @@
     },
     gratitude: {
       patterns: [
+        "grateful", "grateful for the journey",
         "I(?:'m| am) (?:so |truly |incredibly )?grateful", "feeling (?:so |truly |incredibly )?(?:grateful|blessed)",
         "humbled and honored", "truly humbled", "deeply humbled", "honored and privileged", "forever grateful",
         "gratitude post", "pinch[- ]me moment", "couldn(?:'|’)t have done it without", "thank you to (?:my|the) (?:amazing|incredible) team",
@@ -105,6 +107,14 @@
       ],
       funny: ["please validate me below?", "any noises from the congregation?", "deposit one opinion in the comments", "tag someone who owes you lunch", "repost if the algorithm has taken your family"],
       spicy: ["agree, damn it?", "what the hell do you think?", "drop your shit in the comments", "who the fuck is with me?", "feed the goddamn algorithm"]
+    },
+    outreach: {
+      patterns: [
+        "avenues?", "collaborat(?:e|es|ed|ing|ion)", "connect with you", "explore avenues?",
+        "catch up", "compare notes", "pick your brain", "meaningful conversation", "mutually beneficial"
+      ],
+      funny: ["inspect some suspicious corridors", "schedule a ceremonial coffee", "put two calendars in a room together", "exchange professionally formatted noises", "form a temporary spreadsheet alliance"],
+      spicy: ["see which doors aren't fucking painted on", "survive a goddamn coffee chat", "hold a meeting about having another meeting", "swap some highly billable bullshit", "form a short-lived corporate clusterfuck"]
     }
   };
 

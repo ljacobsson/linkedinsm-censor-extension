@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "LinkedInism Censor",
-  "version": "1.7.1",
+  "version": "1.8.1",
   "description": "Spot and censor corporate LinkedIn clichés in your feed.",
   "permissions": ["storage"],
   "host_permissions": ["https://*.linkedin.com/*"],

@@ -58,7 +58,7 @@ Replacement selection is deterministic for a given phrase and position, which pr
 ### Three detection levels
 
 - **Gentle:** replaces at most one match per text node.
-- **Balanced:** replaces at most four matches per text node. This is the default.
+- **Balanced:** replaces at most twenty matches per text block. This is the default and is high enough to cover normal long-form posts.
 - **Ruthless:** replaces every non-overlapping match found.
 
 When patterns overlap, the extension favors the longer match. Composer warnings always inspect all matches regardless of the selected feed intensity.
